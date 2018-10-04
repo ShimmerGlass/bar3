@@ -91,11 +91,11 @@ func Bandwidth() Slot {
 			tColor = ColorActive
 		}
 
-		return fmt.Sprintf("%s %s  %s %s",
+		return fmt.Sprintf(`<span font_size="small">%s</span> %s  %s <span font_size="small">%s</span>`,
 			iconC("\uf063", rColor),
 			humanize.Bytes(uint64(cr)),
-			iconC("\uf062", tColor),
 			humanize.Bytes(uint64(ct)),
+			iconC("\uf062", tColor),
 		)
 	})
 }
