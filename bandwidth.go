@@ -66,10 +66,10 @@ func readBandwidth(dev string) (int, int, error) {
 	return 0, 0, fmt.Errorf("dev %s not found", dev)
 }
 
-func Bandwidth() Slot {
+func Bandwidth(iface string) Slot {
 	lastR, lastT := -1, -1
 	return NewTimedSlot(time.Second, func() string {
-		r, t, err := readBandwidth("enp3s0")
+		r, t, err := readBandwidth(iface)
 		if err != nil {
 			log.Fatal(err)
 		}
