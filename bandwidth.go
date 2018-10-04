@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -63,7 +62,7 @@ func readBandwidth(dev string) (int, int, error) {
 		return r, t, nil
 	}
 
-	return 0, 0, fmt.Errorf("dev %s not found", dev)
+	return 0, 0, fmt.Errorf("dev \"%s\" not found", dev)
 }
 
 func Bandwidth(iface string) Slot {
@@ -71,7 +70,7 @@ func Bandwidth(iface string) Slot {
 	return NewTimedSlot(time.Second, func() string {
 		r, t, err := readBandwidth(iface)
 		if err != nil {
-			log.Fatal(err)
+			errMsg(err.Error())
 		}
 
 		if lastR == -1 && lastT == -1 {
