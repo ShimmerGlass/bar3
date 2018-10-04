@@ -35,3 +35,12 @@ func color(c string, msg string) string {
 func errMsg(s string) string {
 	return color("#ff0000", fmt.Sprintf("<%s>", s))
 }
+
+func elipsis(s string, l int) string {
+	sr := []rune(s)
+	if len(sr) <= l {
+		return s
+	}
+
+	return string(sr[:l]) + "…"
+}

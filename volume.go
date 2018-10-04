@@ -43,40 +43,35 @@ func Volume() Slot {
 			log.Fatal(err)
 		}
 
-		if len(sinks) == 0 {
-			return "-%"
-		}
-
 		var vol float64
 
-		var muted bool
-		err = pulse.Device(sinks[0]).Get("Mute", &muted)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if !muted {
-			var volumes []uint32
-			err = pulse.Device(sinks[0]).Get("Volume", &volumes)
+		if len(sinks) >= 0 {
+
+			var muted bool
+			err = pulse.Device(sinks[0]).Get("Mute", &muted)
 			if err != nil {
 				log.Fatal(err)
 			}
+			if !muted {
+				var volumes []uint32
+				err = pulse.Device(sinks[0]).Get("Volume", &volumes)
+				if err != nil {
+					log.Fatal(err)
+				}
 
-			var volumeSteps uint32
-			err = pulse.Device(sinks[0]).Get("VolumeSteps", &volumeSteps)
-			if err != nil {
-				log.Fatal(err)
+				var volumeSteps uint32
+				err = pulse.Device(sinks[0]).Get("VolumeSteps", &volumeSteps)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				var volTotal uint32
+				for _, v := range volumes {
+					volTotal += v
+				}
+
+				vol = float64(volTotal) / float64(len(volumes)) / float64(volumeSteps)
 			}
-
-			var volTotal uint32
-			for _, v := range volumes {
-				volTotal += v
-			}
-
-			vol = float64(volTotal) / float64(len(volumes)) / float64(volumeSteps)
-		}
-
-		if vol == 0 {
-			return iconC("\uf026", ColorInactive)
 		}
 
 		var pattern string
@@ -87,11 +82,11 @@ func Volume() Slot {
 		}
 
 		barSize := float64(10)
-		pattern += color(ColorInactive, " [")
+		pattern += color(ColorInactive, " [ ")
 		pattern += color(ColorHighlight, strings.Repeat("/", int(math.Round(vol*barSize))))
 		pattern += color(ColorInactive, strings.Repeat("/", int(math.Round(barSize-vol*barSize))))
-		pattern += color(ColorInactive, "]")
+		pattern += color(ColorInactive, " ]")
 
-		return font("DroidSansMono", bold(pattern))
+		return bold(pattern)
 	}, app.out)
 }

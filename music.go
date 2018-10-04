@@ -114,9 +114,9 @@ func Music() Slot {
 
 		return fmt.Sprintf("%s  %s %s %s",
 			iconC("\uf001", ColorHighlight),
-			html.EscapeString(title),
+			html.EscapeString(elipsis(title, 30)),
 			iconC("•", ColorInactive),
-			html.EscapeString(artist),
+			html.EscapeString(elipsis(artist, 30)),
 		)
 	}, refresh)
 }
