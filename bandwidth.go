@@ -90,7 +90,7 @@ func Bandwidth(iface string) Slot {
 			tColor = ColorActive
 		}
 
-		return fmt.Sprintf(`<span font_size="small">%s</span> %s  %s <span font_size="small">%s</span>`,
+		return fmt.Sprintf(`<span font_size="small">%s</span> <span font_family="Noto Mono">%-6s  %6s</span> <span font_size="small">%s</span>`,
 			iconC("\uf063", rColor),
 			humanize.Bytes(uint64(cr)),
 			humanize.Bytes(uint64(ct)),
