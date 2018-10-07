@@ -96,10 +96,10 @@ func Grad(v float64, stops ...GradStop) Color {
 		return ColorText
 	}
 
-	if v < stops[0].At {
+	if v <= stops[0].At {
 		return stops[0].Color
 	}
-	if v > stops[len(stops)-1].At {
+	if v >= stops[len(stops)-1].At {
 		return stops[len(stops)-1].Color
 	}
 
