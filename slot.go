@@ -9,12 +9,21 @@ type Slot interface {
 	Signal()
 }
 
-type BasicSlot struct {
+type BasicSlot chan string
+
+func (b BasicSlot) Out() <-chan string {
+	return b
+}
+
+func (b BasicSlot) Signal() {
+}
+
+type CallbackSlot struct {
 	out        chan string
 	mainSignal chan struct{}
 }
 
-func NewBasicSlot(exec func() string, signals ...chan struct{}) *BasicSlot {
+func NewCbSlot(exec func() string, signals ...chan struct{}) *CallbackSlot {
 	mainSignal := make(chan struct{})
 	signals = append(signals, mainSignal)
 
@@ -34,21 +43,21 @@ func NewBasicSlot(exec func() string, signals ...chan struct{}) *BasicSlot {
 		}
 	}()
 
-	return &BasicSlot{
+	return &CallbackSlot{
 		out:        out,
 		mainSignal: mainSignal,
 	}
 }
 
-func (s *BasicSlot) Out() <-chan string {
+func (s *CallbackSlot) Out() <-chan string {
 	return s.out
 }
 
-func (s *BasicSlot) Signal() {
+func (s *CallbackSlot) Signal() {
 	s.mainSignal <- struct{}{}
 }
 
-func NewTimedSlot(interval time.Duration, exec func() string, signals ...chan struct{}) *BasicSlot {
+func NewTimedSlot(interval time.Duration, exec func() string, signals ...chan struct{}) *CallbackSlot {
 	tsignal := make(chan struct{})
 	go func() {
 		for range time.Tick(interval) {
@@ -56,11 +65,11 @@ func NewTimedSlot(interval time.Duration, exec func() string, signals ...chan st
 		}
 	}()
 
-	return NewBasicSlot(exec, append(signals, tsignal)...)
+	return NewCbSlot(exec, append(signals, tsignal)...)
 }
 
-func Static(c string) *BasicSlot {
-	return NewBasicSlot(func() string {
+func Static(c string) *CallbackSlot {
+	return NewCbSlot(func() string {
 		return c
 	})
 }
