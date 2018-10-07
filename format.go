@@ -2,52 +2,82 @@ package main
 
 import (
 	"fmt"
-	"image/color"
+	"html"
+	"strings"
 )
+
+type Pango interface {
+	Pango() string
+}
+
+type Color struct {
+	R, G, B uint8
+}
+
+func (c Color) String() string {
+	return fmt.Sprintf("#%.2x%.2x%.2x", c.R, c.G, c.B)
+}
+func (c Color) Pango() string {
+	return fmt.Sprintf("color=\"%s\"", c.String())
+}
 
 var (
-	ColorText       = color.RGBA{0xd4, 0xe5, 0xf7, 0xff}
-	ColorInactive   = color.RGBA{0x2f, 0x34, 0x3f, 0xff}
-	ColorActive     = color.RGBA{0x62, 0x6b, 0x82, 0xff}
-	ColorHighlight  = color.RGBA{0x2f, 0x6e, 0xaf, 0xff}
-	ColorHighlight2 = color.RGBA{0x25, 0xB2, 0x84, 0xff}
-	ColorHighlight3 = color.RGBA{0x5e, 0x57, 0xba, 0xff}
-	ColorError      = color.RGBA{0xff, 0, 0, 0xff}
-	ColorLove       = color.RGBA{0xef, 0x09, 0x46, 0xff}
-	ColorWarning    = color.RGBA{0xff, 0xd1, 0x35, 0xff}
-	ColorDanger     = color.RGBA{0xff, 0x79, 0x35, 0xff}
+	ColorText       = Color{0xd4, 0xe5, 0xf7}
+	ColorInactive   = Color{0x2f, 0x34, 0x3f}
+	ColorActive     = Color{0x62, 0x6b, 0x82}
+	ColorHighlight  = Color{0x2f, 0x6e, 0xaf}
+	ColorHighlight2 = Color{0x25, 0xB2, 0x84}
+	ColorHighlight3 = Color{0x5e, 0x57, 0xba}
+	ColorError      = Color{0xff, 0, 0}
+	ColorLove       = Color{0xef, 0x09, 0x46}
+	ColorWarning    = Color{0xff, 0xd1, 0x35}
+	ColorDanger     = Color{0xff, 0x79, 0x35}
 )
 
-func iconC(c string, color color.Color) string {
-	return fmt.Sprintf(`<span color="%s" font_family="FontAwesome">%s</span>`, colorFmt(color), string(c))
+type Font string
+
+func (f Font) Pango() string {
+	return fmt.Sprintf("font_family=\"%s\"", f)
 }
 
-func icon(c string) string {
-	return fmt.Sprintf(`<span font_family="FontAwesome">%s</span>`, string(c))
+const (
+	FontIcon Font = "FontAwesome"
+	FontMono Font = "Noto Mono"
+)
+
+type FontSize string
+
+func (f FontSize) Pango() string {
+	return fmt.Sprintf("font_size=\"%s\"", f)
 }
 
-func font(font string, msg string) string {
-	return fmt.Sprintf(`<span font_family="%s">%s</span>`, font, msg)
+const (
+	FontSizeSmall  FontSize = "small"
+	FontSizeMedium FontSize = "medium"
+	FontSizeLarge  FontSize = "large"
+)
+
+func Style(txt string, opts ...Pango) string {
+	p := "<span"
+	for _, o := range opts {
+		p += " " + o.Pango()
+	}
+	return p + ">" + html.EscapeString(txt) + "</span>"
 }
 
-func bold(msg string) string {
-	return fmt.Sprintf("<b>%s</b>", msg)
+func Icon(code string, opts ...Pango) string {
+	return Style(code, append(opts, FontIcon)...)
 }
 
-func colorize(c color.Color, msg string) string {
-	return fmt.Sprintf(`<span color="%s">%s</span>`, colorFmt(c), msg)
+func Error(s string) string {
+	return Style(fmt.Sprintf("<%s>", s), ColorError)
 }
 
-func errMsg(s string) string {
-	return colorize(ColorError, fmt.Sprintf("<%s>", s))
+func Comb(s ...string) string {
+	return strings.Join(s, "")
 }
 
-func colorFmt(c color.Color) string {
-	rgba := color.RGBAModel.Convert(c).(color.RGBA)
-	return fmt.Sprintf("#%.2x%.2x%.2x", rgba.R, rgba.G, rgba.B)
-}
-
-func elipsis(s string, l int) string {
+func Elipsis(s string, l int) string {
 	sr := []rune(s)
 	if len(sr) <= l {
 		return s
@@ -56,12 +86,12 @@ func elipsis(s string, l int) string {
 	return string(sr[:l]) + "…"
 }
 
-type ColorSlideStop struct {
+type GradStop struct {
 	At    float64
-	Color color.Color
+	Color Color
 }
 
-func colorSlide(v float64, stops ...ColorSlideStop) color.Color {
+func Grad(v float64, stops ...GradStop) Color {
 	if len(stops) == 0 {
 		return ColorText
 	}
@@ -73,7 +103,7 @@ func colorSlide(v float64, stops ...ColorSlideStop) color.Color {
 		return stops[len(stops)-1].Color
 	}
 
-	var left, right ColorSlideStop
+	var left, right GradStop
 
 	for i, s := range stops {
 		if v >= s.At {
@@ -83,13 +113,10 @@ func colorSlide(v float64, stops ...ColorSlideStop) color.Color {
 	}
 
 	r := (v - left.At) / (right.At - left.At)
-	leftrgb := color.RGBAModel.Convert(left.Color).(color.RGBA)
-	rightrgb := color.RGBAModel.Convert(right.Color).(color.RGBA)
 
-	return color.RGBA{
-		uint8(float64(leftrgb.R) + (float64(rightrgb.R)-float64(leftrgb.R))*r),
-		uint8(float64(leftrgb.G) + (float64(rightrgb.G)-float64(leftrgb.G))*r),
-		uint8(float64(leftrgb.B) + (float64(rightrgb.B)-float64(leftrgb.B))*r),
-		0xff,
+	return Color{
+		uint8(float64(left.Color.R) + (float64(right.Color.R)-float64(left.Color.R))*r),
+		uint8(float64(left.Color.G) + (float64(right.Color.G)-float64(left.Color.G))*r),
+		uint8(float64(left.Color.B) + (float64(right.Color.B)-float64(left.Color.B))*r),
 	}
 }

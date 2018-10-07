@@ -76,17 +76,17 @@ func Volume() Slot {
 
 		var pattern string
 		if vol == 0 {
-			pattern = iconC("\uf026", ColorInactive)
+			pattern = Icon("\uf026", ColorInactive)
 		} else {
-			pattern = iconC("\uf028", ColorHighlight)
+			pattern = Icon("\uf028", ColorHighlight)
 		}
 
 		barSize := float64(10)
-		pattern += colorize(ColorInactive, " [ ")
-		pattern += colorize(ColorHighlight, strings.Repeat("/", int(math.Round(vol*barSize))))
-		pattern += colorize(ColorInactive, strings.Repeat("/", int(math.Round(barSize-vol*barSize))))
-		pattern += colorize(ColorInactive, " ]")
+		pattern += Style(" [ ", ColorInactive)
+		pattern += Style(strings.Repeat("/", int(math.Round(vol*barSize))), ColorHighlight)
+		pattern += Style(strings.Repeat("/", int(math.Round(barSize-vol*barSize))), ColorInactive)
+		pattern += Style(" ]", ColorInactive)
 
-		return bold(pattern)
+		return pattern
 	}, app.out)
 }

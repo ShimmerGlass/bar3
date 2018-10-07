@@ -18,7 +18,7 @@ func main() {
 	}
 
 	w := NewWriter(os.Stdout)
-	Run(w, colorize(ColorInactive, "  ╱  "),
+	Run(w, Style("  ╱  ", ColorInactive),
 		Bandwidth(*netIface),
 		Music(),
 		Volume(),

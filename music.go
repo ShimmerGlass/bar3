@@ -320,14 +320,17 @@ func Music() Slot {
 
 		hasTrackLabel := ""
 		if hasTrack {
-			hasTrackLabel = iconC(" \uf004", ColorLove)
+			hasTrackLabel = Style(" \uf004", ColorLove)
 		}
 
-		return fmt.Sprintf("%s  %s %s %s %s",
-			iconC("\uf001", ColorHighlight),
-			html.EscapeString(elipsis(title, 30)),
-			iconC("•", ColorInactive),
-			html.EscapeString(elipsis(artist, 30)),
+		return Comb(
+			Icon("\uf001", ColorHighlight),
+			"  ",
+			html.EscapeString(Elipsis(title, 30)),
+			" ",
+			Icon("•", ColorInactive),
+			" ",
+			html.EscapeString(Elipsis(artist, 30)),
 			hasTrackLabel,
 		)
 	}, refresh)

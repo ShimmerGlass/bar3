@@ -70,7 +70,7 @@ func Bandwidth(iface string) Slot {
 	return NewTimedSlot(time.Second, func() string {
 		r, t, err := readBandwidth(iface)
 		if err != nil {
-			errMsg(err.Error())
+			Error(err.Error())
 		}
 
 		if lastR == -1 && lastT == -1 {
@@ -90,11 +90,11 @@ func Bandwidth(iface string) Slot {
 			tColor = ColorActive
 		}
 
-		return fmt.Sprintf(`<span font_size="small">%s</span> <span font_family="Noto Mono">%-6s  %6s</span> <span font_size="small">%s</span>`,
-			iconC("\uf063", rColor),
-			humanize.Bytes(uint64(cr)),
-			humanize.Bytes(uint64(ct)),
-			iconC("\uf062", tColor),
+		return Comb(
+			Icon("\uf063 ", rColor, FontSizeSmall),
+			Style(fmt.Sprintf("%-6s", humanize.Bytes(uint64(cr))), FontMono),
+			Style(fmt.Sprintf("%6s", humanize.Bytes(uint64(ct))), FontMono),
+			Icon(" \uf062", tColor, FontSizeSmall),
 		)
 	})
 }
