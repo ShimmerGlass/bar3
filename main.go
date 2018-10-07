@@ -11,7 +11,7 @@ func main() {
 	flag.Parse()
 
 	w := NewWriter(os.Stdout)
-	Run(w, color(ColorInactive, "  ╱  "),
+	Run(w, colorize(ColorInactive, "  ╱  "),
 		Bandwidth(*netIface),
 		Music(),
 		Volume(),

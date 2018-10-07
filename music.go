@@ -240,7 +240,7 @@ func Music() Slot {
 
 		hasTrackLabel := ""
 		if hasTrack {
-			hasTrackLabel = iconC(" \uf004", "#ef0946")
+			hasTrackLabel = iconC(" \uf004", ColorLove)
 		}
 
 		return fmt.Sprintf("%s  %s %s %s %s",

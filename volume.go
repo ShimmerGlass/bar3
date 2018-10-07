@@ -82,10 +82,10 @@ func Volume() Slot {
 		}
 
 		barSize := float64(10)
-		pattern += color(ColorInactive, " [ ")
-		pattern += color(ColorHighlight, strings.Repeat("/", int(math.Round(vol*barSize))))
-		pattern += color(ColorInactive, strings.Repeat("/", int(math.Round(barSize-vol*barSize))))
-		pattern += color(ColorInactive, " ]")
+		pattern += colorize(ColorInactive, " [ ")
+		pattern += colorize(ColorHighlight, strings.Repeat("/", int(math.Round(vol*barSize))))
+		pattern += colorize(ColorInactive, strings.Repeat("/", int(math.Round(barSize-vol*barSize))))
+		pattern += colorize(ColorInactive, " ]")
 
 		return bold(pattern)
 	}, app.out)

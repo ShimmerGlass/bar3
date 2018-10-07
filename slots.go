@@ -46,7 +46,7 @@ func Run(w *Writer, sep string, slots ...Slot) error {
 		err := w.Write(Block{
 			FullText: status,
 			Markup:   MarkupPango,
-			Color:    "#d4e5f7",
+			Color:    colorFmt(ColorText),
 		})
 		if err != nil {
 			log.Fatal(err)
