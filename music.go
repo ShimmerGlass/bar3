@@ -23,7 +23,7 @@ import (
 	"github.com/zmb3/spotify"
 )
 
-const spotifyRedirectURI = "http://localhost:8080"
+const spotifyRedirectURI = "http://localhost:8080/callback"
 
 var spotifyAuthenticator = spotify.NewAuthenticator(spotifyRedirectURI,
 	spotify.ScopeUserReadPrivate,
