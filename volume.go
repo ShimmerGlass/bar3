@@ -30,17 +30,24 @@ func Volume() Slot {
 
 	app := &pulselistener{make(chan struct{})}
 
-	errs := pulse.Register(app)
-	if len(errs) > 0 {
-		log.Fatal(err)
-	}
+	go func() {
+		for {
+			errs := pulse.Register(app)
+			if len(errs) > 0 {
+				log.Println(err)
+				time.Sleep(time.Second)
+				continue
+			}
 
-	go pulse.Listen()
+			pulse.Listen()
+		}
+	}()
 
 	return NewTimedSlot(time.Minute, func() string {
 		sinks, err := pulse.Core().ListPath("Sinks")
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return ""
 		}
 
 		var vol float64
@@ -50,19 +57,22 @@ func Volume() Slot {
 			var muted bool
 			err = pulse.Device(sinks[0]).Get("Mute", &muted)
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				return ""
 			}
 			if !muted {
 				var volumes []uint32
 				err = pulse.Device(sinks[0]).Get("Volume", &volumes)
 				if err != nil {
-					log.Fatal(err)
+					log.Println(err)
+					return ""
 				}
 
 				var volumeSteps uint32
 				err = pulse.Device(sinks[0]).Get("VolumeSteps", &volumeSteps)
 				if err != nil {
-					log.Fatal(err)
+					log.Println(err)
+					return ""
 				}
 
 				var volTotal uint32
