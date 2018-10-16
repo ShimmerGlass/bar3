@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -17,11 +16,7 @@ func APT(interval time.Duration) Slot {
 		}
 
 		if len(pkgs) > 0 {
-			return Comb(
-				Icon("\uf49e", ColorHighlight3),
-				" ",
-				fmt.Sprint(len(pkgs)),
-			)
+			return Icon("\uf019", ColorHighlight2)
 		}
 
 		return ""
