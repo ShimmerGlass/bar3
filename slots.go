@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 )
 
 type SlotEntry struct {
@@ -26,12 +27,17 @@ func Run(w *Writer, sep string, slots ...Slot) error {
 		go func(i int, s *SlotEntry) {
 			for status := range s.Out() {
 				s.LastStatus = status
-				changed <- struct{}{}
+				select {
+				case changed <- struct{}{}:
+				default:
+				}
 			}
 		}(i, entry)
 	}
 
+	timer := time.NewTicker(300 * time.Millisecond)
 	for range changed {
+		<-timer.C
 		status := ""
 
 		for _, s := range entries {
