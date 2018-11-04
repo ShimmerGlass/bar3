@@ -23,66 +23,80 @@ func (two *pulselistener) DeviceMuteUpdated(path dbus.ObjectPath, state bool) {
 }
 
 func Volume() Slot {
-	pulse, err := pulseaudio.New()
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	var pulse *pulseaudio.Client
 	app := &pulselistener{make(chan struct{})}
+	pulseUp := make(chan struct{})
 
 	go func() {
-		for {
-			errs := pulse.Register(app)
-			if len(errs) > 0 {
+		for pulse == nil {
+			var err error
+			pulse, err = pulseaudio.New()
+			if err != nil {
 				log.Println(err)
 				time.Sleep(time.Second)
 				continue
 			}
 
-			pulse.Listen()
+			go func() {
+				for {
+					errs := pulse.Register(app)
+					if len(errs) > 0 {
+						log.Println(err)
+						time.Sleep(time.Second)
+						continue
+					}
+
+					pulse.Listen()
+				}
+			}()
+
+			pulseUp <- struct{}{}
 		}
 	}()
 
 	return NewTimedSlot(time.Minute, func() string {
-		sinks, err := pulse.Core().ListPath("Sinks")
-		if err != nil {
-			log.Println(err)
-			return ""
-		}
-
 		var vol float64
 
-		if len(sinks) >= 0 {
-
-			var muted bool
-			err = pulse.Device(sinks[0]).Get("Mute", &muted)
+		if pulse != nil {
+			sinks, err := pulse.Core().ListPath("Sinks")
 			if err != nil {
 				log.Println(err)
-				return ""
+				goto Draw
 			}
-			if !muted {
-				var volumes []uint32
-				err = pulse.Device(sinks[0]).Get("Volume", &volumes)
+
+			if len(sinks) >= 0 {
+
+				var muted bool
+				err = pulse.Device(sinks[0]).Get("Mute", &muted)
 				if err != nil {
 					log.Println(err)
-					return ""
+					goto Draw
 				}
+				if !muted {
+					var volumes []uint32
+					err = pulse.Device(sinks[0]).Get("Volume", &volumes)
+					if err != nil {
+						log.Println(err)
+						goto Draw
+					}
 
-				var volumeSteps uint32
-				err = pulse.Device(sinks[0]).Get("VolumeSteps", &volumeSteps)
-				if err != nil {
-					log.Println(err)
-					return ""
+					var volumeSteps uint32
+					err = pulse.Device(sinks[0]).Get("VolumeSteps", &volumeSteps)
+					if err != nil {
+						log.Println(err)
+						goto Draw
+					}
+
+					var volTotal uint32
+					for _, v := range volumes {
+						volTotal += v
+					}
+
+					vol = float64(volTotal) / float64(len(volumes)) / float64(volumeSteps)
 				}
-
-				var volTotal uint32
-				for _, v := range volumes {
-					volTotal += v
-				}
-
-				vol = float64(volTotal) / float64(len(volumes)) / float64(volumeSteps)
 			}
 		}
+	Draw:
 
 		var pattern string
 		if vol == 0 {
@@ -98,5 +112,5 @@ func Volume() Slot {
 		}
 
 		return pattern
-	}, app.out)
+	}, app.out, pulseUp)
 }
