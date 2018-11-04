@@ -93,7 +93,9 @@ func Volume() Slot {
 
 		barSize := float64(10)
 		pattern += Style(strings.Repeat("●", int(math.Round(vol*barSize))), ColorHighlight)
-		pattern += Style(strings.Repeat("●", int(math.Round(barSize-vol*barSize))), ColorInactive)
+		if vol <= 1 {
+			pattern += Style(strings.Repeat("●", int(math.Round(barSize-vol*barSize))), ColorInactive)
+		}
 
 		return pattern
 	}, app.out)
