@@ -73,16 +73,18 @@ func Bandwidth(iface string) Slot {
 			Error(err.Error())
 		}
 
+		var cr, ct int
+		rColor, tColor := ColorInactive, ColorInactive
+
 		if lastR == -1 && lastT == -1 {
 			lastR = r
 			lastT = t
-			return ""
+			goto Draw
 		}
 
-		cr, ct := r-lastR, t-lastT
+		cr, ct = r-lastR, t-lastT
 		lastR, lastT = r, t
 
-		rColor, tColor := ColorInactive, ColorInactive
 		if cr > 0 {
 			rColor = ColorActive
 		}
@@ -90,6 +92,7 @@ func Bandwidth(iface string) Slot {
 			tColor = ColorActive
 		}
 
+	Draw:
 		return Comb(
 			Icon("\uf063 ", rColor, FontSizeSmall),
 			Style(fmt.Sprintf("%-6s", humanize.Bytes(uint64(cr))), FontMono),
