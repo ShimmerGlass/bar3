@@ -25,6 +25,7 @@ func main() {
 		Volume(),
 		RAM(time.Second),
 		CPU(2*time.Second),
+		Storage(10*time.Minute),
 		Date(),
 	)
 }
