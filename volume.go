@@ -100,11 +100,12 @@ func Volume() Slot {
 
 		var pattern string
 		if vol == 0 {
-			pattern = Icon("\uf026 ", ColorInactive)
+			pattern = Icon("\uf026", ColorInactive)
 		} else {
-			pattern = Icon("\uf028 ", ColorHighlight)
+			pattern = Icon("\uf028", ColorHighlight)
 		}
 
+		pattern += " "
 		barSize := float64(10)
 		pattern += Style(strings.Repeat("●", int(math.Round(vol*barSize))), ColorHighlight)
 		if vol <= 1 {
