@@ -19,13 +19,15 @@ func Weather(interval time.Duration) Slot {
 		if w == nil {
 			return ""
 		}
-		err := w.CurrentByName("Paris,FR")
+		err := w.CurrentByName("Paris, FR")
 		if err != nil {
 			log.Println(err)
 		}
 
 		var thunder, rain, snow, fog, clear, clouds bool
+		var conditionIDs []int
 		for _, c := range w.Weather {
+			conditionIDs = append(conditionIDs, c.ID)
 			switch c.ID / 100 {
 			case 2:
 				thunder = true
@@ -62,6 +64,8 @@ func Weather(interval time.Duration) Slot {
 		case clear:
 			icon = "\ufa98"
 		}
+
+		log.Println("weather: codes:", conditionIDs)
 
 		return Comb(
 			Icon(icon, ColorHighlight2),
