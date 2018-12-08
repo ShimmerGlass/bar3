@@ -94,11 +94,11 @@ func Bandwidth(iface string) Slot {
 
 	Draw:
 		return Comb(
-			Icon("\uf063 ", rColor, FontSizeSmall),
-			Style(fmt.Sprintf("%-6s", humanize.Bytes(uint64(cr))), FontMono),
+			Icon("\uf063", rColor, FontSizeSmall),
+			Style(fmt.Sprintf(" %-6s", humanize.Bytes(uint64(cr))), FontMono),
 			"  ",
-			Style(fmt.Sprintf("%6s", humanize.Bytes(uint64(ct))), FontMono),
-			Icon(" \uf062", tColor, FontSizeSmall),
+			Style(fmt.Sprintf("%6s ", humanize.Bytes(uint64(ct))), FontMono),
+			Icon("\uf062", tColor, FontSizeSmall),
 		)
 	})
 }

@@ -41,7 +41,7 @@ func (f Font) Pango() string {
 }
 
 const (
-	FontIcon Font = "FontAwesome"
+	FontIcon Font = "NotoSansDisplay Nerd Font Mono"
 	FontMono Font = "Noto Mono"
 )
 
