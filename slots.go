@@ -35,7 +35,7 @@ func Run(w *Writer, sep string, slots ...Slot) error {
 		}(i, entry)
 	}
 
-	timer := time.NewTicker(300 * time.Millisecond)
+	timer := time.NewTicker(100 * time.Millisecond)
 	for range changed {
 		<-timer.C
 		status := ""
