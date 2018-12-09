@@ -26,8 +26,10 @@ func Weather(interval time.Duration) Slot {
 
 		var thunder, rain, snow, fog, clear, clouds bool
 		var conditionIDs []int
+		var iconIDs []string
 		for _, c := range w.Weather {
 			conditionIDs = append(conditionIDs, c.ID)
+			iconIDs = append(iconIDs, c.Icon)
 			switch c.ID / 100 {
 			case 2:
 				thunder = true
@@ -65,7 +67,7 @@ func Weather(interval time.Duration) Slot {
 			icon = "\ufa98"
 		}
 
-		log.Println("weather: codes:", conditionIDs)
+		log.Println("weather: codes:", conditionIDs, "icons:", iconIDs)
 
 		return Comb(
 			Icon(icon, ColorHighlight2),
