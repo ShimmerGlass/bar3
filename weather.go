@@ -71,7 +71,7 @@ func Weather(interval time.Duration) Slot {
 
 		return Comb(
 			Icon(icon, ColorHighlight2),
-			fmt.Sprintf(" %.1f°", w.Main.Temp),
+			fmt.Sprintf("  %.1f°", w.Main.Temp),
 		)
 	})
 }
