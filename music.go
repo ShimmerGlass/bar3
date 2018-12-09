@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"golang.org/x/oauth2"
 	"html"
 	"log"
 	"net/http"
@@ -14,6 +13,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"golang.org/x/oauth2"
 
 	"github.com/patrickmn/go-cache"
 
@@ -334,7 +335,6 @@ func Music() Slot {
 			html.EscapeString(Elipsis(title, 30)),
 			" ",
 			Icon("•", ColorInactive),
-			" ",
 			html.EscapeString(Elipsis(artist, 30)),
 			"  ",
 			Icon(hasTrackIcon, hasTrackColor),
