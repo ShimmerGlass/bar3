@@ -24,50 +24,41 @@ func Weather(interval time.Duration) Slot {
 			log.Println(err)
 		}
 
-		var thunder, rain, snow, fog, clear, clouds bool
-		var conditionIDs []int
-		var iconIDs []string
-		for _, c := range w.Weather {
-			conditionIDs = append(conditionIDs, c.ID)
-			iconIDs = append(iconIDs, c.Icon)
-			switch c.ID / 100 {
-			case 2:
-				thunder = true
-			case 3, 5:
-				rain = true
-			case 6:
-				snow = true
-			case 7:
-				fog = true
-			case 8:
-				clouds = true
-			}
-			if c.ID == 800 {
-				clear = true
-			}
-		}
-
 		var icon string
-		switch {
-		case thunder && rain:
-			icon = "\ufb7c"
-		case thunder:
-			icon = "\ufa92"
-		case snow && rain:
-			icon = "\ufb7d"
-		case snow:
-			icon = "\ufa97"
-		case rain:
-			icon = "\ufa95"
-		case fog:
-			icon = "\ufa90"
-		case clouds:
-			icon = "\ufa8f"
-		case clear:
-			icon = "\ufa98"
+		if len(w.Weather) > 0 {
+			switch w.Weather[0].Icon {
+			case "01d":
+				icon = "\ue30d"
+			case "02d":
+				icon = "\ue302"
+			case "03d", "03n":
+				icon = "\ue33d"
+			case "04d", "04n":
+				icon = "\ue312"
+			case "09d", "09n":
+				icon = "\ue318"
+			case "10d":
+				icon = "\ue309"
+			case "11d", "11n":
+				icon = "\ue31d"
+			case "13d":
+				icon = "\ue30a"
+			case "50d":
+				icon = "\ue3ae"
+			case "01n":
+				icon = "\ue32b"
+			case "02n":
+				icon = "\ue32e"
+			case "10n":
+				icon = "\ue334"
+			case "13n":
+				icon = "\ue327"
+			case "50n":
+				icon = "\ue346"
+			}
 		}
 
-		log.Println("weather: codes:", conditionIDs, "icons:", iconIDs)
+		log.Printf("weather: %+v", w.Weather)
 
 		return Comb(
 			Icon(icon, ColorHighlight2),
