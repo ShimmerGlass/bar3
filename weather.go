@@ -22,6 +22,7 @@ func Weather(interval time.Duration) Slot {
 		err := w.CurrentByName("Paris, FR")
 		if err != nil {
 			log.Println(err)
+			return ""
 		}
 
 		var icon string
