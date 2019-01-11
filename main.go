@@ -19,6 +19,7 @@ func main() {
 
 	w := NewWriter(os.Stdout)
 	Run(w, Style("  ╱  ", ColorInactive),
+		VPN(time.Second),
 		APT(30*time.Minute),
 		Bandwidth(*netIface),
 		Music(),
