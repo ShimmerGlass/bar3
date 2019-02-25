@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -10,14 +12,18 @@ import (
 func CPU(interval time.Duration) Slot {
 	return NewTimedSlot(interval, func() string {
 		p, _ := cpu.Percent(0, false)
-		usage := p[0]
-		if usage >= 100 {
-			usage = 99
+		usage := int(math.Round(p[0]))
+		usageStr := strconv.Itoa(usage)
+		switch len(usageStr) {
+		case 3:
+			usageStr = "00"
+		case 1:
+			usageStr = " " + usageStr
 		}
 		return Comb(
 			Icon("\uf0e4", ColorHighlight3),
 			Style(
-				fmt.Sprintf(" %2.0f%%", usage),
+				fmt.Sprintf(" %s%%", usageStr),
 				Grad(p[0],
 					GradStop{0, ColorText},
 					GradStop{50, ColorText},
