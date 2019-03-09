@@ -191,7 +191,7 @@ func spotifyClientAcquire() (*spotify.Client, error) {
 func Music() Slot {
 	conn, err := dbus.SessionBus()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Failed to connect to session bus:", err)
+		log.Println("Failed to connect to session bus:", err)
 		os.Exit(1)
 	}
 
