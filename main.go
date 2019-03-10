@@ -7,10 +7,15 @@ import (
 	"log/syslog"
 	"os"
 	"os/exec"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
 func main() {
+	// ignore remapped stop/cont signals sent by i3bar
+	signal.Ignore(syscall.SIGUSR1, syscall.SIGUSR2)
+
 	netIface := flag.String("net-iface", "", "")
 	flag.Parse()
 

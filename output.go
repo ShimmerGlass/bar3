@@ -3,8 +3,6 @@ package main
 import (
 	"encoding/json"
 	"io"
-	"os/signal"
-	"syscall"
 )
 
 const witerPreamble = `{"version": 1, "stop_signal": 10, "cont_signal": 12}
@@ -27,9 +25,6 @@ type Writer struct {
 }
 
 func NewWriter(out io.Writer) *Writer {
-	// ignore remapped stop/cont signals sent by i3bar
-	signal.Ignore(syscall.SIGUSR1, syscall.SIGUSR2)
-
 	return &Writer{out: out}
 }
 
