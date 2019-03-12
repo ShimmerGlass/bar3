@@ -8,12 +8,12 @@ import (
 )
 
 func RAM(interval time.Duration) Slot {
-	return NewTimedSlot(interval, func() string {
+	return NewTimedSlot(interval, func() []Part {
 		v, _ := mem.VirtualMemory()
-		return Comb(
-			Style("\uf2db", ColorHighlight3),
-			"  ",
-			humanize.Bytes(v.Free+v.Cached),
-		)
+		return []Part{
+			IconPart("\uf2db"),
+			TextPart("  "),
+			TextPart(humanize.Bytes(v.Free + v.Cached)),
+		}
 	})
 }

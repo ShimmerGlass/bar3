@@ -67,14 +67,13 @@ func readBandwidth(dev string) (int, int, error) {
 
 func Bandwidth(iface string) Slot {
 	lastR, lastT := -1, -1
-	return NewTimedSlot(time.Second, func() string {
+	return NewTimedSlot(time.Second, func() []Part {
 		r, t, err := readBandwidth(iface)
 		if err != nil {
 			Error(err.Error())
 		}
 
 		var cr, ct int
-		rColor, tColor := ColorInactive, ColorInactive
 
 		if lastR == -1 && lastT == -1 {
 			lastR = r
@@ -85,20 +84,13 @@ func Bandwidth(iface string) Slot {
 		cr, ct = r-lastR, t-lastT
 		lastR, lastT = r, t
 
-		if cr > 0 {
-			rColor = ColorActive
-		}
-		if ct > 0 {
-			tColor = ColorActive
-		}
-
 	Draw:
-		return Comb(
-			Icon("\uf063", rColor, FontSizeSmall),
-			Style(fmt.Sprintf(" %-6s", humanize.Bytes(uint64(cr))), FontMono),
-			"  ",
-			Style(fmt.Sprintf("%6s ", humanize.Bytes(uint64(ct))), FontMono),
-			Icon("\uf062", tColor, FontSizeSmall),
-		)
+		return []Part{
+			IconPart("\uf063"),
+			TextPart(fmt.Sprintf(" %-7s", humanize.Bytes(uint64(cr))), FontMono),
+			TextPart("   "),
+			TextPart(fmt.Sprintf("%7s ", humanize.Bytes(uint64(ct))), FontMono),
+			IconPart("\uf062"),
+		}
 	})
 }

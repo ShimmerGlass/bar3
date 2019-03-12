@@ -9,15 +9,15 @@ import (
 )
 
 func Storage(interval time.Duration) Slot {
-	return NewTimedSlot(interval, func() string {
+	return NewTimedSlot(interval, func() []Part {
 		stat, err := disk.Usage("/")
 		if err != nil {
 			log.Println(err)
-			return ""
+			return nil
 		}
-		return Comb(
-			Icon("\uf0a0", ColorHighlight3),
-			fmt.Sprintf("  %2.0f%%", stat.UsedPercent),
-		)
+		return []Part{
+			IconPart("\uf0a0"),
+			TextPart(fmt.Sprintf(" %2.0f%%", stat.UsedPercent), FontMono),
+		}
 	})
 }

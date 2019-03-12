@@ -15,14 +15,14 @@ func Weather(interval time.Duration) Slot {
 		log.Println(err)
 	}
 
-	return NewTimedSlot(interval, func() string {
+	return NewTimedSlot(interval, func() []Part {
 		if w == nil {
-			return ""
+			return nil
 		}
 		err := w.CurrentByName("Paris, FR")
 		if err != nil {
 			log.Println(err)
-			return ""
+			return nil
 		}
 
 		var icon string
@@ -61,9 +61,9 @@ func Weather(interval time.Duration) Slot {
 
 		log.Printf("weather: %+v", w.Weather)
 
-		return Comb(
-			Icon(icon, ColorHighlight2),
-			fmt.Sprintf("  %.1f°", w.Main.Temp),
-		)
+		return []Part{
+			IconPart(icon),
+			TextPart(fmt.Sprintf("  %.1f°", w.Main.Temp)),
+		}
 	})
 }

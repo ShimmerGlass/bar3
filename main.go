@@ -52,7 +52,7 @@ func main() {
 	log.Println("Startup: fork")
 
 	w := NewWriter(os.Stdout)
-	Run(w, Style("  ╱  ", ColorInactive),
+	Run(w, Part{Text: "   ╱   ", Sat: .1, Lum: .3},
 		VPN(time.Second),
 		APT(30*time.Minute),
 		Bandwidth(*netIface),

@@ -1,122 +1,71 @@
 package main
 
 import (
-	"fmt"
-	"html"
-	"strings"
+	"unicode/utf8"
+
+	"github.com/lucasb-eyer/go-colorful"
 )
 
-type Pango interface {
-	Pango() string
+type Part struct {
+	Text   string
+	Sat    float64
+	Lum    float64
+	Styles []Pango
 }
 
-type Color struct {
-	R, G, B uint8
-}
-
-func (c Color) String() string {
-	return fmt.Sprintf("#%.2x%.2x%.2x", c.R, c.G, c.B)
-}
-func (c Color) Pango() string {
-	return fmt.Sprintf("color=\"%s\"", c.String())
-}
-
-var (
-	ColorText       = Color{0xd4, 0xe5, 0xf7}
-	ColorInactive   = Color{0x2f, 0x34, 0x3f}
-	ColorActive     = Color{0x62, 0x6b, 0x82}
-	ColorHighlight  = Color{0x2f, 0x6e, 0xaf}
-	ColorHighlight2 = Color{0x25, 0xB2, 0x84}
-	ColorHighlight3 = Color{0x5e, 0x57, 0xba}
-	ColorError      = Color{0xff, 0, 0}
-	ColorLove       = Color{0xef, 0x09, 0x46}
-	ColorWarning    = Color{0xff, 0xd1, 0x35}
-	ColorDanger     = Color{0xff, 0x79, 0x35}
-)
-
-type Font string
-
-func (f Font) Pango() string {
-	return fmt.Sprintf("font_family=\"%s\"", f)
-}
-
-const (
-	FontIcon Font = "NotoSansDisplay Nerd Font Mono"
-	FontMono Font = "Noto Mono"
-)
-
-type FontSize string
-
-func (f FontSize) Pango() string {
-	return fmt.Sprintf("font_size=\"%s\"", f)
-}
-
-const (
-	FontSizeSmall  FontSize = "small"
-	FontSizeMedium FontSize = "medium"
-	FontSizeLarge  FontSize = "large"
-)
-
-func Style(txt string, opts ...Pango) string {
-	p := "<span"
-	for _, o := range opts {
-		p += " " + o.Pango()
+func IconPart(icon string) Part {
+	return Part{
+		Text:   icon,
+		Sat:    .7,
+		Lum:    .6,
+		Styles: []Pango{FontIcon},
 	}
-	return p + ">" + html.EscapeString(txt) + "</span>"
 }
 
-func Icon(code string, opts ...Pango) string {
-	return Style(code, append(opts, FontIcon)...)
+func TextPart(text string, styles ...Pango) Part {
+	return Part{
+		Text:   text,
+		Sat:    .4,
+		Lum:    .85,
+		Styles: styles,
+	}
 }
 
-func Error(s string) string {
-	return Style(fmt.Sprintf("<%s>", s), ColorError)
-}
+func Render(hstart, hend float64, parts []Part) string {
+	res := ""
+	length := 0
 
-func Comb(s ...string) string {
-	return strings.Join(s, "")
-}
-
-func Elipsis(s string, l int) string {
-	sr := []rune(s)
-	if len(sr) <= l {
-		return s
+	for _, part := range parts {
+		length += utf8.RuneCountInString(part.Text)
 	}
 
-	return string(sr[:l]) + "…"
-}
-
-type GradStop struct {
-	At    float64
-	Color Color
-}
-
-func Grad(v float64, stops ...GradStop) Color {
-	if len(stops) == 0 {
-		return ColorText
-	}
-
-	if v <= stops[0].At {
-		return stops[0].Color
-	}
-	if v >= stops[len(stops)-1].At {
-		return stops[len(stops)-1].Color
-	}
-
-	var left, right GradStop
-
-	for i, s := range stops {
-		if v >= s.At {
-			left = s
-			right = stops[i+1]
+	i := 0
+	for _, part := range parts {
+		for _, c := range part.Text {
+			color := rainbow(length, part.Lum, part.Sat, hstart, hend, i)
+			res += Style(string(c), append(part.Styles, color)...)
+			i++
 		}
 	}
 
-	r := (v - left.At) / (right.At - left.At)
+	return res
+}
 
-	return Color{
-		uint8(float64(left.Color.R) + (float64(right.Color.R)-float64(left.Color.R))*r),
-		uint8(float64(left.Color.G) + (float64(right.Color.G)-float64(left.Color.G))*r),
-		uint8(float64(left.Color.B) + (float64(right.Color.B)-float64(left.Color.B))*r),
+func rainbow(length int, lum, sat, hstart, hend float64, pos int) Color {
+	span := 0.0
+	if hend > hstart {
+		span = hend - hstart
+	} else {
+		span = 360 - hstart + hend
 	}
+	step := span / float64(length)
+	hue := (step*float64(pos) + hstart)
+	if hue > 360 {
+		hue -= 360
+	}
+
+	color := colorful.Hsl(hue, sat, lum)
+	r, g, b := color.RGB255()
+
+	return Color{r, g, b}
 }

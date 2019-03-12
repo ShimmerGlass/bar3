@@ -7,10 +7,10 @@ import (
 
 type SlotEntry struct {
 	Slot
-	LastStatus string
+	LastStatus []Part
 }
 
-func Run(w *Writer, sep string, slots ...Slot) error {
+func Run(w *Writer, sep Part, slots ...Slot) error {
 	entries := make([]*SlotEntry, len(slots))
 	changed := make(chan struct{})
 
@@ -35,22 +35,26 @@ func Run(w *Writer, sep string, slots ...Slot) error {
 		}(i, entry)
 	}
 
+	start := time.Now()
+
 	timer := time.NewTicker(100 * time.Millisecond)
+
 	for range changed {
 		<-timer.C
-		status := ""
+		status := []Part{}
 
 		for _, s := range entries {
 			if len(s.LastStatus) > 0 {
 				if len(status) > 0 {
-					status += sep
+					status = append(status, sep)
 				}
-				status += s.LastStatus
+				status = append(status, s.LastStatus...)
 			}
 		}
 
+		hueAdvance := int(time.Since(start).Seconds()) % 360
 		err := w.Write(Block{
-			FullText: status,
+			FullText: Render(float64(hueAdvance), float64((hueAdvance+360)%360), status),
 			Markup:   MarkupPango,
 			Color:    ColorText.String(),
 		})

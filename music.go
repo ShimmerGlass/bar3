@@ -296,25 +296,25 @@ func Music() Slot {
 		}()
 	}()
 
-	return NewTimedSlot(time.Minute, func() string {
+	return NewTimedSlot(time.Minute, func() []Part {
 		playing, err := spotifyPlayStatus(conn)
 		if err != nil {
 			log.Println(err)
-			return ""
+			return nil
 		}
 
 		if !playing {
-			return ""
+			return nil
 		}
 
 		id, title, artist, err := spotifyTrack(conn)
 		if err != nil {
 			log.Println(err)
-			return ""
+			return nil
 		}
 
 		if title == "" && artist == "" {
-			return ""
+			return nil
 		}
 
 		hasTrack := userHasTrack(id)
@@ -329,15 +329,17 @@ func Music() Slot {
 			hasTrackIcon = "\uf08a"
 		}
 
-		return Comb(
-			Icon("\uf001", ColorHighlight),
-			"  ",
-			html.EscapeString(Elipsis(title, 30)),
-			" ",
-			Icon("•", ColorInactive),
-			html.EscapeString(Elipsis(artist, 30)),
-			"  ",
-			Icon(hasTrackIcon, hasTrackColor),
-		)
+		log.Println(hasTrackColor)
+
+		return []Part{
+			IconPart("\uf001"),
+			TextPart("  "),
+			TextPart(Elipsis(html.UnescapeString(title), 30)),
+			TextPart("  "),
+			IconPart("•"),
+			TextPart(Elipsis(html.UnescapeString(artist), 30)),
+			TextPart("  "),
+			IconPart(hasTrackIcon),
+		}
 	}, refresh)
 }

@@ -8,17 +8,17 @@ import (
 )
 
 func APT(interval time.Duration) Slot {
-	return NewTimedSlot(interval, func() string {
+	return NewTimedSlot(interval, func() (parts []Part) {
 		pkgs, err := apt.ListUpgradable()
 		if err != nil {
 			log.Println(err)
-			return ""
+			return
 		}
 
 		if len(pkgs) > 0 {
-			return Icon("\uf019", ColorHighlight2)
+			parts = append(parts, IconPart("\uf019"))
 		}
 
-		return ""
+		return parts
 	})
 }

@@ -10,15 +10,15 @@ import (
 )
 
 func Battery(interval time.Duration) Slot {
-	return NewTimedSlot(interval, func() string {
+	return NewTimedSlot(interval, func() []Part {
 		batteries, err := battery.GetAll()
 		if err != nil {
 			log.Println("battery: ", err)
-			return ""
+			return nil
 		}
 
 		if len(batteries) == 0 {
-			return ""
+			return nil
 		}
 
 		var icons = [][]string{
@@ -48,8 +48,6 @@ func Battery(interval time.Duration) Slot {
 			},
 		}
 
-		r := ""
-
 		for _, b := range batteries {
 			var si []string
 			if b.State == battery.Charging {
@@ -66,13 +64,13 @@ func Battery(interval time.Duration) Slot {
 				ratio = 1
 			}
 
-			r += Comb(
-				Icon(si[int(math.Round(ratio*10))-1], ColorHighlight3),
-				" ",
-				fmt.Sprintf("%.0f%%", math.Round(ratio*100)),
-			)
+			return []Part{
+				IconPart(si[int(math.Round(ratio*10))-1]),
+				TextPart(" "),
+				TextPart(fmt.Sprintf("%.0f%%", math.Round(ratio*100)), FontMono),
+			}
 		}
 
-		return r
+		return nil
 	})
 }

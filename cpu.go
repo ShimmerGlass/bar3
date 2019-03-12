@@ -10,7 +10,7 @@ import (
 )
 
 func CPU(interval time.Duration) Slot {
-	return NewTimedSlot(interval, func() string {
+	return NewTimedSlot(interval, func() []Part {
 		p, _ := cpu.Percent(0, false)
 		usage := int(math.Round(p[0]))
 		usageStr := strconv.Itoa(usage)
@@ -20,18 +20,13 @@ func CPU(interval time.Duration) Slot {
 		case 1:
 			usageStr = " " + usageStr
 		}
-		return Comb(
-			Icon("\uf0e4", ColorHighlight3),
-			Style(
-				fmt.Sprintf(" %s%%", usageStr),
-				Grad(p[0],
-					GradStop{0, ColorText},
-					GradStop{50, ColorText},
-					GradStop{75, ColorWarning},
-					GradStop{100, ColorDanger},
-				),
-				FontMono,
-			),
-		)
+
+		txt := TextPart(fmt.Sprintf(" %s%%", usageStr), FontMono)
+		txt.Sat = p[0] / 100
+
+		return []Part{
+			IconPart("\uf0e4"),
+			txt,
+		}
 	})
 }

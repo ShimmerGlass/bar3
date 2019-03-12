@@ -54,7 +54,7 @@ func Volume() Slot {
 		}
 	}()
 
-	return NewTimedSlot(time.Minute, func() string {
+	return NewTimedSlot(time.Minute, func() []Part {
 		var vol float64
 
 		if pulse != nil {
@@ -98,20 +98,26 @@ func Volume() Slot {
 		}
 	Draw:
 
-		var pattern string
+		parts := []Part{}
 		if vol == 0 {
-			pattern = Icon("\uf026", ColorInactive)
+			parts = append(parts, IconPart("\uf026"))
 		} else {
-			pattern = Icon("\uf028", ColorHighlight)
+			parts = append(parts, IconPart("\uf028"))
 		}
 
-		pattern += " "
+		parts = append(parts, TextPart("  "))
 		barSize := float64(10)
-		pattern += Style(strings.Repeat("●", int(math.Round(vol*barSize))), ColorHighlight)
+		p := TextPart(strings.Repeat("●", int(math.Round(vol*barSize))))
+		p.Lum = .7
+		p.Sat = .7
+		parts = append(parts, p)
 		if vol <= 1 {
-			pattern += Style(strings.Repeat("●", int(math.Round(barSize-vol*barSize))), ColorInactive)
+			p := TextPart(strings.Repeat("●", int(math.Round(barSize-vol*barSize))))
+			p.Sat = 0
+			p.Lum = .2
+			parts = append(parts, p)
 		}
 
-		return pattern
+		return parts
 	}, app.out, pulseUp)
 }
