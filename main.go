@@ -61,7 +61,7 @@ func main() {
 		RAM(time.Second),
 		CPU(2*time.Second),
 		Storage(10*time.Minute),
-		Battery(time.Minute),
+		Battery(time.Second),
 		Weather(30*time.Minute),
 		Date(),
 	)
