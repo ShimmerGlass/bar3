@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -51,11 +52,15 @@ func main() {
 
 	log.Println("Startup: fork")
 
-	w := NewWriter(os.Stdout)
-	Run(w, Part{Text: "   ╱   ", Sat: .1, Lum: .3},
+	slots := []Slot{
 		VPN(time.Second),
-		APT(30*time.Minute),
-		Bandwidth(*netIface),
+		APT(30 * time.Minute),
+	}
+	for _, i := range strings.Split(*netIface, ",") {
+		slots = append(slots, Bandwidth(i))
+	}
+
+	slots = append(slots,
 		Music(),
 		Volume(),
 		RAM(time.Second),
@@ -65,4 +70,7 @@ func main() {
 		Weather(30*time.Minute),
 		Date(),
 	)
+
+	w := NewWriter(os.Stdout)
+	Run(w, Part{Text: "   ╱   ", Sat: .1, Lum: .3}, slots...)
 }

@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+var RainbowPanSpeed = 1.0
+
 type SlotEntry struct {
 	Slot
 	LastStatus []Part
@@ -35,10 +37,10 @@ func Run(w *Writer, sep Part, slots ...Slot) error {
 		}(i, entry)
 	}
 
-	start := time.Now()
-
 	timer := time.NewTicker(100 * time.Millisecond)
 
+	lastHue := 0
+	lastHueTime := time.Now()
 	for range changed {
 		<-timer.C
 		status := []Part{}
@@ -52,9 +54,11 @@ func Run(w *Writer, sep Part, slots ...Slot) error {
 			}
 		}
 
-		hueAdvance := int(time.Since(start).Seconds()) % 360
+		newHue := (lastHue + int(time.Since(lastHueTime).Seconds()*RainbowPanSpeed)) % 360
+		lastHue = newHue
+		lastHueTime = time.Now()
 		err := w.Write(Block{
-			FullText: Render(float64(hueAdvance), float64((hueAdvance+360)%360), status),
+			FullText: Render(float64(newHue), float64(newHue), status),
 			Markup:   MarkupPango,
 			Color:    ColorText.String(),
 		})

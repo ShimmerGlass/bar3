@@ -24,6 +24,8 @@ func CPU(interval time.Duration) Slot {
 		txt := TextPart(fmt.Sprintf(" %s%%", usageStr), FontMono)
 		txt.Sat = p[0] / 100
 
+		RainbowPanSpeed = p[0] / 2
+
 		return []Part{
 			IconPart("\uf0e4"),
 			txt,
