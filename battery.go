@@ -65,7 +65,7 @@ func Battery(interval time.Duration) Slot {
 			}
 
 			return []Part{
-				IconPart(si[int(math.Round(ratio*10))-1]),
+				IconPart(si[int(math.Round(ratio*9))]),
 				TextPart(" "),
 				TextPart(fmt.Sprintf("%.0f%%", math.Round(ratio*100)), FontMono),
 			}
