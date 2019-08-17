@@ -19,9 +19,18 @@ func VPN(interval time.Duration) Slot {
 				return nil
 			}
 		}
-		conns := nm.GetActiveConnections()
+		conns, err := nm.GetActiveConnections()
+		if err != nil {
+			log.Printf("vpn: %s", err)
+			return nil
+		}
 		for _, c := range conns {
-			if c.GetVPN() {
+			isVPN, err := c.GetVPN()
+			if err != nil {
+				log.Printf("vpn: %s", err)
+				continue
+			}
+			if isVPN {
 				return []Part{IconPart("\uf456")}
 			}
 		}

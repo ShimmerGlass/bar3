@@ -59,8 +59,6 @@ func Weather(interval time.Duration) Slot {
 			}
 		}
 
-		log.Printf("weather: %+v", w.Weather)
-
 		return []Part{
 			IconPart(icon),
 			TextPart(fmt.Sprintf("  %.1f°", w.Main.Temp)),
