@@ -64,7 +64,7 @@ func Volume() Slot {
 				goto Draw
 			}
 
-			if len(sinks) >= 0 {
+			if len(sinks) > 0 {
 
 				var muted bool
 				err = pulse.Device(sinks[0]).Get("Mute", &muted)

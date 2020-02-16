@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/BellerophonMobile/gonetworkmanager"
+	"github.com/Wifx/gonetworkmanager"
 )
 
 func VPN(interval time.Duration) Slot {
@@ -19,13 +19,13 @@ func VPN(interval time.Duration) Slot {
 				return nil
 			}
 		}
-		conns, err := nm.GetActiveConnections()
+		conns, err := nm.GetPropertyActiveConnections()
 		if err != nil {
 			log.Printf("vpn: %s", err)
 			return nil
 		}
 		for _, c := range conns {
-			isVPN, err := c.GetVPN()
+			isVPN, err := c.GetPropertyVPN()
 			if err != nil {
 				log.Printf("vpn: %s", err)
 				continue
