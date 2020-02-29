@@ -331,15 +331,23 @@ func Music() Slot {
 
 		log.Println(hasTrackColor)
 
-		return []Part{
+		parts := []Part{
 			IconPart("\uf001"),
 			TextPart("  "),
 			TextPart(Elipsis(html.UnescapeString(title), 30)),
 			TextPart("  "),
-			IconPart("•"),
-			TextPart(Elipsis(html.UnescapeString(artist), 30)),
-			TextPart("  "),
-			IconPart(hasTrackIcon),
 		}
+		if len(artist) > 0 {
+			parts = append(parts,
+				IconPart("•"),
+				TextPart(Elipsis(html.UnescapeString(artist), 30)),
+				TextPart("  "),
+			)
+		}
+		parts = append(parts,
+			IconPart(hasTrackIcon),
+		)
+
+		return parts
 	}, refresh)
 }
