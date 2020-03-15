@@ -1,4 +1,4 @@
-module github.com/aestek/bar3
+module github.com/shimmerglass/bar3
 
 go 1.13
 
@@ -16,7 +16,7 @@ require (
 	github.com/shirou/gopsutil v2.19.11+incompatible
 	github.com/skratchdot/open-golang v0.0.0-20190402232053-79abb63cd66e
 	github.com/sqp/pulseaudio v0.0.0-20180916175200-29ac6bfa231c
-	github.com/stretchr/testify v1.4.0 // indirect
+	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/zmb3/spotify v0.0.0-20191028153142-869e03dbd8b0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
 )

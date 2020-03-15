@@ -3,6 +3,8 @@ github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d h1:G0m3OIz70MZUW
 github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/Wifx/gonetworkmanager v0.1.1 h1:cxlRPehYA4LUo1sy5UWBdO8grbMTkXGdOf8ju0l2rmc=
 github.com/Wifx/gonetworkmanager v0.1.1/go.mod h1:EdhHf2O00IZXfMv9LC6CS6SgTwcMTg/ZSDhGvch0cs8=
+github.com/aestek/bar3 v0.0.0-20200229170639-0c75e91c66a9 h1:zPIgIqkw7A18Nr8J1vN2zJgQ0ITqbAEkq1UPl+DznPE=
+github.com/aestek/bar3 v0.0.0-20200229170639-0c75e91c66a9/go.mod h1:PXfkhQxYdQm9grPiXPwCL6kL7fCbKFahvUIaUFFcYss=
 github.com/arduino/go-apt-client v0.0.0-20190812130613-5613f843fdc8 h1:HpmeqWCUoU+dPrz8V4KGDMDxvR+WyeJ0g6DSSqnptuY=
 github.com/arduino/go-apt-client v0.0.0-20190812130613-5613f843fdc8/go.mod h1:U1gYCDLM1Kg0dG0PxUjlT09+l6/TdUZKx0FQ2CocJUU=
 github.com/briandowns/openweathermap v0.13.0 h1:Mt+fS6+3q7QjcPu5lNoOVpJQfzs62QJ78gd4QzoS+MA=
@@ -42,6 +44,8 @@ github.com/sqp/pulseaudio v0.0.0-20180916175200-29ac6bfa231c/go.mod h1:RH1uOz6Xa
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
+github.com/stretchr/testify v1.5.1 h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H4=
+github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/zmb3/spotify v0.0.0-20191028153142-869e03dbd8b0 h1:MVLklg1SWVS2rvK1NDXmy04rgjfq7dCnyncqZfPWL+A=
 github.com/zmb3/spotify v0.0.0-20191028153142-869e03dbd8b0/go.mod h1:pHsWAmY9PfX7i/uwPZkmWrebc8JbK8FppKbvyevwzSU=
 golang.org/x/net v0.0.0-20180724234803-3673e40ba225/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=

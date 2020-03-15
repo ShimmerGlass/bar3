@@ -319,17 +319,12 @@ func Music() Slot {
 
 		hasTrack := userHasTrack(id)
 
-		var hasTrackColor Color
 		var hasTrackIcon string
 		if hasTrack {
-			hasTrackColor = ColorLove
 			hasTrackIcon = "\uf004"
 		} else {
-			hasTrackColor = ColorInactive
 			hasTrackIcon = "\uf08a"
 		}
-
-		log.Println(hasTrackColor)
 
 		parts := []Part{
 			IconPart("\uf001"),
