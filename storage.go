@@ -49,9 +49,9 @@ func DiskUtilisation(name string, interval time.Duration) Slot {
 		}
 
 		return []Part{
-			TextPart(fmt.Sprintf(" %-7s", humanize.Bytes(uint64(readPs))), FontMono),
+			TextPart(fmt.Sprintf("%-7s", humanize.Bytes(uint64(readPs))), FontMono),
 			TextPart(" "),
-			TextPart(fmt.Sprintf(" %7s", humanize.Bytes(uint64(writePs))), FontMono),
+			TextPart(fmt.Sprintf("%7s", humanize.Bytes(uint64(writePs))), FontMono),
 		}
 	})
 }
