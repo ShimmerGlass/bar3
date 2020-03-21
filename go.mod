@@ -18,5 +18,5 @@ require (
 	github.com/sqp/pulseaudio v0.0.0-20180916175200-29ac6bfa231c
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/zmb3/spotify v0.0.0-20191028153142-869e03dbd8b0
-	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 )
