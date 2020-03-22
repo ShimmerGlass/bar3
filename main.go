@@ -24,6 +24,9 @@ func main() {
 		log.SetOutput(logwriter)
 	}
 
+	pw := &ProcessWatcher{}
+	go pw.watch()
+
 	slots := []Slot{
 		Music(),
 		Volume(),
@@ -36,16 +39,10 @@ func main() {
 	}
 
 	slots = append(slots,
-		RAM(time.Second),
-		CPU(2*time.Second),
+		RAM(time.Second, pw),
+		CPU(2*time.Second, pw),
 		Storage(10*time.Minute),
-	)
-
-	for _, i := range strings.Split(*disks, ",") {
-		slots = append(slots, DiskUtilisation(i, time.Second))
-	}
-
-	slots = append(slots,
+		DiskUtilisation(strings.Split(*disks, ","), time.Second),
 		Battery(time.Second),
 		Weather(30*time.Minute),
 		Date(),

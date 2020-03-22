@@ -83,7 +83,7 @@ func Elipsis(s string, l int) string {
 		return s
 	}
 
-	return string(sr[:l]) + "…"
+	return string(sr[:l-1]) + "…"
 }
 
 type GradStop struct {

@@ -23,29 +23,28 @@ func Storage(interval time.Duration) Slot {
 	})
 }
 
-func DiskUtilisation(name string, interval time.Duration) Slot {
-	var last *disk.IOCountersStat
+func DiskUtilisation(names []string, interval time.Duration) Slot {
+	last := map[string]disk.IOCountersStat{}
 	return NewTimedSlot(interval, func() []Part {
-		allStats, err := disk.IOCounters(name)
+		allStats, err := disk.IOCounters(names...)
 		if err != nil {
 			log.Println(err)
 			return nil
 		}
-		stats, ok := allStats[name]
-		if !ok {
-			return nil
-		}
 
 		var readPs, writePs float64
-		if last == nil {
-			last = &stats
-		} else {
-			readD := stats.ReadBytes - last.ReadBytes
-			writeD := stats.WriteBytes - last.WriteBytes
-			last = &stats
+		for name, stats := range allStats {
+			lastStats, ok := last[name]
+			if !ok {
+				last[name] = stats
+			} else {
+				readD := stats.ReadBytes - lastStats.ReadBytes
+				writeD := stats.WriteBytes - lastStats.WriteBytes
+				last[name] = stats
 
-			readPs = float64(readD) / interval.Seconds()
-			writePs = float64(writeD) / interval.Seconds()
+				readPs += float64(readD) / interval.Seconds()
+				writePs += float64(writeD) / interval.Seconds()
+			}
 		}
 
 		return []Part{
