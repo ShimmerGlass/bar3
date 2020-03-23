@@ -22,10 +22,8 @@ func (w *ProcessWatcher) watch() {
 		}
 
 		cpuVals := map[int32]float64{}
-		maxTime := float64(0)
-		maxRAM := uint64(0)
-		maxCPUName := ""
-		maxRAMName := ""
+		ramPerName := map[string]uint64{}
+		cpuPerName := map[string]float64{}
 		for _, pid := range pids {
 			proc, err := process.NewProcess(pid)
 			if err != nil {
@@ -51,21 +49,31 @@ func (w *ProcessWatcher) watch() {
 			}
 
 			timeD := time - lastTime
-
-			if timeD > maxTime {
-				maxTime = timeD
-				maxCPUName = procName
-			}
-
+			cpuPerName[procName] += timeD
 			// ram
 			ram, err := proc.MemoryInfo()
 			if err != nil {
 				continue
 			}
 
-			if ram.RSS > maxRAM {
-				maxRAM = ram.RSS
-				maxRAMName = procName
+			ramPerName[procName] += ram.RSS
+		}
+
+		maxTime := float64(0)
+		maxRAM := uint64(0)
+		maxCPUName := ""
+		maxRAMName := ""
+
+		for name, val := range cpuPerName {
+			if val > maxTime {
+				maxTime = val
+				maxCPUName = name
+			}
+		}
+		for name, val := range ramPerName {
+			if val > maxRAM {
+				maxRAM = val
+				maxRAMName = name
 			}
 		}
 
